@@ -64,15 +64,6 @@ class Product
         return $stmt->execute();
     }
 
-    // Delete
-    public function delete($id)
-    {
-        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id', $id);
-        return $stmt->execute();
-    }
-
     // Read by category
     public function readByCategory($category_id)
     {
@@ -81,5 +72,13 @@ class Product
         $stmt->bindParam(':category_id', $category_id);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Delete
+    public function delete($id)
+    {
+        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
     }
 }
