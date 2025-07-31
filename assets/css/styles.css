@@ -1,0 +1,513 @@
+/* styles Globaux */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+/* Navbar enhancements */
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Card hover effects */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Styles des boutons */
+.btn {
+    border-radius: 4px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* Style de l'image du produit */
+.card-img-top {
+    transition: opacity 0.3s ease;
+}
+
+.card:hover .card-img-top {
+    opacity: 0.9;
+}
+
+/* Footer styles */
+.footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.footer h5 {
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+}
+
+.footer .text-muted {
+    color: #adb5bd !important;
+}
+
+.footer a {
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+/* Responsive design */
+@media (max-width: 767.98px) {
+    .input-group.w-25 {
+        width: 100% !important;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+    }
+    
+    .d-flex.justify-content-between .input-group {
+        margin-top: 1rem;
+    }
+}
+
+/* Badge de positionnement */
+.position-absolute {
+    z-index: 10;
+}
+
+/* Prix en gras */
+.text-success {
+    color: #28a745 !important;
+}
+
+/* Etoile */
+.text-warning {
+    color: #ffc107 !important;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Animation pour les boutons */
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Product Card Styles */
+.product-card {
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: 220px;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+    transform: scale(1.1);
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.price-tag {
+    position: relative;
+    display: inline-block;
+}
+
+.price-tag::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: calc(100% + 10px);
+    background-color: rgba(0, 123, 255, 0.1);
+    border-radius: 4px;
+    z-index: -1;
+}
+
+/* Ribbon styles */
+.ribbon {
+    position: absolute;
+    z-index: 1;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    top: -10px;
+    right: -10px;
+}
+
+.ribbon-top-right {
+    top: -10px;
+    right: -10px;
+}
+
+.ribbon-top-right::before,
+.ribbon-top-right::after {
+    border-top-color: transparent;
+    border-right-color: transparent;
+}
+
+.ribbon-top-right::before {
+    top: 0;
+    left: 0;
+}
+
+.ribbon-top-right::after {
+    bottom: 0;
+    right: 0;
+}
+
+.ribbon-top-right span {
+    position: absolute;
+    top: 30px;
+    right: -25px;
+    transform: rotate(45deg);
+    width: 200px;
+    background-color: #ff5722;
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 5px 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero section styles */
+.jumbotron {
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    position: relative;
+    overflow: hidden;
+}
+
+.jumbotron::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 123, 255, 0) 100%);
+    z-index: 0;
+}
+
+.jumbotron .display-4 {
+    font-weight: 700;
+    color: #343a40;
+}
+
+.jumbotron .lead {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+/* Product Detail Page Styles */
+.product-gallery {
+    position: relative;
+}
+
+.main-image-container {
+    height: 400px;
+    overflow: hidden;
+}
+
+.main-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.main-image-container:hover .main-product-image {
+    transform: scale(1.05);
+}
+
+.thumbnail-container {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.thumbnail-container.active {
+    border-color: #007bff;
+}
+
+.thumbnail-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #343a40;
+}
+
+.product-rating {
+    display: flex;
+    align-items: center;
+}
+
+.stars {
+    color: #ffc107;
+    margin-right: 10px;
+}
+
+.rating-count {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.product-price {
+    display: flex;
+    align-items: center;
+}
+
+.current-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #007bff;
+    margin-right: 15px;
+}
+
+.original-price {
+    font-size: 1.2rem;
+    color: #6c757d;
+    text-decoration: line-through;
+    margin-right: 10px;
+}
+
+.discount-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.product-description {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.description-content {
+    color: #495057;
+    line-height: 1.6;
+}
+
+.product-availability {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.stock-status {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.in-stock {
+    color: #28a745;
+}
+
+.in-stock i {
+    margin-right: 5px;
+}
+
+.delivery-info {
+    color: #6c757d;
+}
+
+.delivery-info i {
+    margin-right: 5px;
+}
+
+.product-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.quantity-selector {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.quantity-btn {
+    background-color: #f8f9fa;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #e9ecef;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ced4da;
+    border-right: 1px solid #ced4da;
+    padding: 8px 0;
+}
+
+.add-to-cart-btn {
+    flex-grow: 1;
+}
+
+.wishlist-btn {
+    padding: 10px 15px;
+}
+
+.product-benefits {
+    margin-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.benefit-item i {
+    font-size: 1.5rem;
+    color: #007bff;
+}
+
+.benefit-text h6 {
+    margin-bottom: 2px;
+    font-weight: 600;
+}
+
+.benefit-text p {
+    margin-bottom: 0;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.product-share {
+    border-top: 1px solid #dee2e6;
+    padding-top: 20px;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #007bff;
+    color: white;
+}

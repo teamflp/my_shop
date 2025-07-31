@@ -6,20 +6,20 @@ use models\Category;
 
 class CategoryController
 {
-    private $categoryModel;
+    private Category $categoryModel;
 
     public function __construct()
     {
         $this->categoryModel = new Category();
     }
 
-    public function adminList()
+    public function adminList(): void
     {
         $categories = $this->categoryModel->readAll();
         require_once __DIR__ . '/../views/admin/categories.php';
     }
 
-    public function add()
+    public function add(): void
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $name = $_POST['name'];
@@ -32,7 +32,7 @@ class CategoryController
         require_once __DIR__ . '/../views/admin/category_form.php';
     }
 
-    public function edit()
+    public function edit(): void
     {
         $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {

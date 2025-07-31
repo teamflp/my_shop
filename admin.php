@@ -2,8 +2,10 @@
 require_once 'init.php';
 
 use models\Auth;
+use controllers\DashboardController;
 use controllers\ProductController;
 use controllers\CategoryController;
+use controllers\UserController;
 
 // Check if user is admin
 if (!Auth::isAdmin()) {
@@ -13,9 +15,8 @@ if (!Auth::isAdmin()) {
 
 $action = $_GET['action'] ?? 'dashboard';
 
-// Simple router for admin actions
 switch ($action) {
-    // Product Actions
+    // Actions pour les produits
     case 'products':
         (new ProductController())->adminList();
         break;
@@ -42,9 +43,23 @@ switch ($action) {
     case 'delete_category':
         (new CategoryController())->delete();
         break;
+        
+    // User Actions
+    case 'users':
+        (new UserController())->adminList();
+        break;
+    case 'add_user':
+        (new UserController())->addUser();
+        break;
+    case 'edit_user':
+        (new UserController())->editUser();
+        break;
+    case 'delete_user':
+        (new UserController())->deleteUser();
+        break;
 
     // Default to dashboard
     default:
-        require_once 'views/admin_dashboard.php';
+        (new DashboardController())->show();
         break;
 }
