@@ -6,7 +6,7 @@ if (file_exists(__DIR__ . '/../../init.php')) {
 }
 use models\Auth;
 ?>
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
     <meta charset="UTF-8">

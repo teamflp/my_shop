@@ -43,7 +43,13 @@ switch ($action) {
     case 'delete_category':
         (new CategoryController())->delete();
         break;
-        
+
+    // User Actions
+    case 'manage-users':
+        (new UserController())->adminListUsers();
+        break;
+    case 'update_user_status':
+        (new UserController())->updateUserAdminStatus();
     // User Actions
     case 'users':
         (new UserController())->adminList();
@@ -60,6 +66,8 @@ switch ($action) {
 
     // Default to dashboard
     default:
+        require_once 'views/admin_dashboard.php';
         (new DashboardController())->show();
+
         break;
 }

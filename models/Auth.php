@@ -4,12 +4,23 @@ namespace models;
 
 class Auth
 {
+    public static function login($user)
+    {
     public static function login($user): void
     {
         // Enregistrer les informations de l'utilisateur dans la session
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['is_admin'] = $user['is_admin'];
+    }
+
+    public static function logout()
+    {
+        // Unset all session values
+        $_SESSION = array();
+
+        // Destroy the session
+        session_destroy();
     }
 
     public static function logout(): void

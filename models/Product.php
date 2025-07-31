@@ -64,6 +64,15 @@ class Product
         return $stmt->execute();
     }
 
+    // Read by category
+    public function readByCategory($category_id)
+    {
+        $query = "SELECT p.id, p.name, p.description, p.price, p.image, c.name as category_name FROM " . $this->table . " p LEFT JOIN categories c ON p.category_id = c.id WHERE p.category_id = :category_id ORDER BY p.created_at DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':category_id', $category_id);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
     // Delete
     public function delete($id)
     {

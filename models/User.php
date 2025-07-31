@@ -54,6 +54,33 @@ class User
     {
         return password_verify($password, $user['password']);
     }
+
+    public function readAll()
+    {
+        $query = "SELECT id, username, email, is_admin, created_at FROM " . $this->table;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function setAdminStatus($id, $is_admin)
+    {
+        $query = "UPDATE " . $this->table . " SET is_admin = :is_admin WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        // Ensure is_admin is 0 or 1
+        $is_admin = $is_admin ? 1 : 0;
+
+        $stmt->bindParam(':is_admin', $is_admin);
+        $stmt->bindParam(':id', $id);
+
+        return $stmt->execute();
+    }
+
+    public function verifyPassword($user, $password)
+    {
+        return password_verify($password, $user['password']);
+    }
     
     // Read all users (for admin)
     public function readAll()

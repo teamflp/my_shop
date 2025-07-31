@@ -1,5 +1,4 @@
 </main>
-
 <footer class="footer mt-auto py-5 bg-dark text-white">
     <div class="container">
         <div class="row">
