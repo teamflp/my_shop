@@ -180,7 +180,6 @@ class UserController
     }
     
     // Méthode Admin pour la gestion des utilisateurs
-    
     public function adminList()
     {
         $userModel = new User();
