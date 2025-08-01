@@ -14,16 +14,19 @@ class User
         $this->conn = Database::getInstance()->getConnection();
     }
 
-    public function create($username, $email, $password)
+    /**
+     * Crée un nouvel utilisateur.
+     * CORRIGÉ : Insère 0 dans is_admin, qui est un entier.
+     */
+    public function create($username, $email, $password): bool
     {
-        // Hash the password for security
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO " . $this->table . " (username, email, password) VALUES (:username, :email, :password)";
+        // La requête insère 0 pour is_admin et 'active' pour status
+        $query = "INSERT INTO " . $this->table . " (username, email, password, is_admin, status, created_at) VALUES (:username, :email, :password, 0, 'active', NOW())";
 
         $stmt = $this->conn->prepare($query);
 
-        // Sanitize input
         $username = htmlspecialchars(strip_tags($username));
         $email = htmlspecialchars(strip_tags($email));
 
@@ -34,10 +37,7 @@ class User
         if ($stmt->execute()) {
             return true;
         }
-
-        // Print error if something goes wrong
         printf("Error: %s.\n", $stmt->error);
-
         return false;
     }
 
@@ -50,102 +50,57 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function verifyPassword($user, $password)
+    public function verifyPassword($user, $password): bool
     {
         return password_verify($password, $user['password']);
     }
 
-    public function readAll()
+    public function ReadOne($id): array
     {
-        $query = "SELECT id, username, email, is_admin, created_at FROM " . $this->table;
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function setAdminStatus($id, $is_admin)
-    {
-        $query = "UPDATE " . $this->table . " SET is_admin = :is_admin WHERE id = :id";
-        $stmt = $this->conn->prepare($query);
-
-        // Ensure is_admin is 0 or 1
-        $is_admin = $is_admin ? 1 : 0;
-
-        $stmt->bindParam(':is_admin', $is_admin);
-        $stmt->bindParam(':id', $id);
-
-        return $stmt->execute();
-    }
-
-    public function verifyPassword($user, $password)
-    {
-        return password_verify($password, $user['password']);
-    }
-    
-    // Read all users (for admin)
-    public function readAll()
-    {
-        $query = "SELECT id, username, email, is_admin, created_at FROM " . $this->table . " ORDER BY created_at DESC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    // Read one user
-    public function readOne($id)
-    {
-        $query = "SELECT id, username, email, is_admin FROM " . $this->table . " WHERE id = :id";
+        $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
-    // Update user
-    public function update($id, $username, $email, $is_admin, $password = null)
+
+    /**
+     * Récupère tous les utilisateurs avec les colonnes nécessaires pour le tableau de bord.
+     */
+    public function readAll(): array
     {
-        // If password is provided, update it too
-        if ($password) {
-            $query = "UPDATE " . $this->table . " SET username = :username, email = :email, is_admin = :is_admin, password = :password WHERE id = :id";
-        } else {
-            $query = "UPDATE " . $this->table . " SET username = :username, email = :email, is_admin = :is_admin WHERE id = :id";
-        }
-        
+        $query = "SELECT id, username, email, is_admin, status, created_at FROM " . $this->table . " ORDER BY created_at DESC";
         $stmt = $this->conn->prepare($query);
-        
-        // Sanitize input
-        $username = htmlspecialchars(strip_tags($username));
-        $email = htmlspecialchars(strip_tags($email));
-        $is_admin = (int)$is_admin;
-        
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Met à jour le statut et le rôle (is_admin) d'un utilisateur.
+     * CORRIGÉ : Convertit le rôle (ex: "admin") en entier (1 ou 0) pour la BDD.
+     */
+    public function updateStatusAndAdmin($id, $role_string, $status): bool
+    {
+        $is_admin_int = ($role_string === 'admin') ? 1 : 0;
+
+        $query = "UPDATE " . $this->table . " SET is_admin = :is_admin, status = :status WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        $status = htmlspecialchars(strip_tags($status));
+
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':is_admin', $is_admin);
-        
-        if ($password) {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $stmt->bindParam(':password', $hashed_password);
-        }
-        
-        if ($stmt->execute()) {
-            return true;
-        }
-        
-        return false;
+        $stmt->bindParam(':is_admin', $is_admin_int);
+        $stmt->bindParam(':status', $status);
+
+        return $stmt->execute();
     }
     
-    // Delete user
     public function delete($id)
     {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
         
-        if ($stmt->execute()) {
-            return true;
-        }
-        
-        return false;
+        return $stmt->execute();
     }
 }

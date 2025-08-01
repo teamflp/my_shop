@@ -7,7 +7,10 @@ use controllers\ProductController;
 use controllers\CategoryController;
 use controllers\UserController;
 
-// Check if user is admin
+/**
+ * Si l'utilisateur n'a pas la permission d'accéder à la page admin,
+ * il est redirigé vers la page d'accueil.
+**/
 if (!Auth::isAdmin()) {
     header('Location: index.php');
     exit();
@@ -30,7 +33,7 @@ switch ($action) {
         (new ProductController())->delete();
         break;
 
-    // Category Actions
+    // Actions pour les catégories
     case 'categories':
         (new CategoryController())->adminList();
         break;
@@ -44,30 +47,14 @@ switch ($action) {
         (new CategoryController())->delete();
         break;
 
-    // User Actions
-    case 'manage-users':
-        (new UserController())->adminListUsers();
-        break;
+    // Actions pour les utilisateurs
     case 'update_user_status':
         (new UserController())->updateUserAdminStatus();
-    // User Actions
-    case 'users':
-        (new UserController())->adminList();
-        break;
-    case 'add_user':
-        (new UserController())->addUser();
-        break;
-    case 'edit_user':
-        (new UserController())->editUser();
-        break;
-    case 'delete_user':
-        (new UserController())->deleteUser();
         break;
 
-    // Default to dashboard
+    // Par défaut, afficher le tableau de bord
+    case 'dashboard':
     default:
-        require_once 'views/admin_dashboard.php';
         (new DashboardController())->show();
-
         break;
 }

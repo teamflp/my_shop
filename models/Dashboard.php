@@ -14,7 +14,7 @@ class Dashboard
     }
 
     /**
-     * Get count of products
+     * Obtient le nombre de produits
      * @return int
      */
     public function getProductCount(): int
@@ -27,7 +27,7 @@ class Dashboard
     }
 
     /**
-     * Get count of categories
+     * Obtient le nombre de catégories
      * @return int
      */
     public function getCategoryCount(): int
@@ -40,7 +40,7 @@ class Dashboard
     }
 
     /**
-     * Get count of users
+     * Obtient le nombre d'utilisateurs
      * @return int
      */
     public function getUserCount(): int
@@ -53,7 +53,7 @@ class Dashboard
     }
 
     /**
-     * Get all statistics for dashboard
+     * Obtient toutes les statistiques pour le tableau de bord
      * @return array
      */
     public function getStatistics(): array
@@ -63,5 +63,19 @@ class Dashboard
             'category_count' => $this->getCategoryCount(),
             'user_count' => $this->getUserCount()
         ];
+    }
+
+    /**
+     * Récupère les derniers utilisateurs inscrits
+     * @param int $limit Le nombre d'utilisateurs à récupérer
+     * @return array
+     */
+    public function getLatestUsers(int $limit = 5): array
+    {
+        $query = "SELECT username, created_at FROM users ORDER BY created_at DESC LIMIT :limit";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
