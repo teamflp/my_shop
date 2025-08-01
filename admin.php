@@ -47,11 +47,21 @@ switch ($action) {
         (new CategoryController())->delete();
         break;
 
+    // User Actions
+    case 'manage-users':
+        (new UserController())->adminListUsers();
+        break;
     // Actions pour les utilisateurs
     case 'update_user_status':
         (new UserController())->updateUserAdminStatus();
         break;
 
+    // Default to dashboard
+    default:
+        $user_count = (new \models\User())->countAll();
+        $product_count = (new \models\Product())->countAll();
+        $category_count = (new \models\Category())->countAll();
+        require_once 'views/admin_dashboard.php';
     // Par défaut, afficher le tableau de bord
     case 'dashboard':
     default:

@@ -1,4 +1,4 @@
-<?php require_once 'includes/header.php'; ?>
+<?php require_once 'admin/includes/header.php'; ?>
 
 <style>
     /* Votre CSS personnalisé pour les interrupteurs */
