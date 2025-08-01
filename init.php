@@ -1,14 +1,15 @@
 <?php
 
-// Start the session
+// Démarrer la session
 session_start();
 
-// Include configuration
+// Chargement de la configuration
 require_once 'config/config.php';
+require_once 'config/text_constants.php';
 
 // Autoloader
 spl_autoload_register(function ($class_name) {
-    // Replace namespace separators with directory separators
+    // Construire le chemin du fichier PHP
     $class_path = str_replace('\\', '/', $class_name);
     $file = __DIR__ . '/' . $class_path . '.php';
     if (file_exists($file)) {

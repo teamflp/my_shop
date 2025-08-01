@@ -7,8 +7,8 @@ use models\Category;
 
 class ProductController
 {
-    private $productModel;
-    private $categoryModel;
+    private Product $productModel;
+    private Category $categoryModel;
 
     public function __construct()
     {
@@ -16,53 +16,79 @@ class ProductController
         $this->categoryModel = new Category();
     }
 
-    public function adminList()
+    public function adminList(): void
     {
         $products = $this->productModel->readAll();
         require_once __DIR__ . '/../views/admin/products.php';
     }
 
-    public function add()
+    public function add(): void
     {
+        $errors = [];
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Handle file upload
-            $image_path = $this->handleImageUpload();
-
-            $this->productModel->create(
-                $_POST['name'],
-                $_POST['description'],
-                $_POST['price'],
-                $_POST['category_id'],
-                $image_path
-            );
-            header('Location: admin.php?action=products');
-            exit();
+            // Validate form data
+            if (empty($_POST['name']) || empty($_POST['description']) || empty($_POST['price']) || empty($_POST['category_id'])) {
+                $errors[] = ERROR_FILL_ALL_FIELDS;
+            }
+            
+            if (empty($errors)) {
+                // Handle file upload
+                $image_path = $this->handleImageUpload();
+                
+                if ($this->productModel->create(
+                    $_POST['name'],
+                    $_POST['description'],
+                    $_POST['price'],
+                    $_POST['category_id'],
+                    $image_path
+                )) {
+                    header('Location: admin.php?action=products');
+                    exit();
+                } else {
+                    $errors[] = ERROR_PRODUCT_ADD_FAILED;
+                }
+            }
         }
+        
         $categories = $this->categoryModel->readAll();
         require_once __DIR__ . '/../views/admin/product_form.php';
     }
 
-    public function edit()
+    public function edit(): void
     {
+        $errors = [];
         $id = $_GET['id'];
+        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $image_path = $this->handleImageUpload();
-            // If no new image is uploaded, keep the old one
-            if ($image_path === null && !empty($_POST['existing_image'])) {
-                $image_path = $_POST['existing_image'];
+            // Validate form data
+            if (empty($_POST['name']) || empty($_POST['description']) || empty($_POST['price']) || empty($_POST['category_id'])) {
+                $errors[] = ERROR_FILL_ALL_FIELDS;
             }
+            
+            if (empty($errors)) {
+                $image_path = $this->handleImageUpload();
+                // If no new image is uploaded, keep the old one
+                if ($image_path === null && !empty($_POST['existing_image'])) {
+                    $image_path = $_POST['existing_image'];
+                }
 
-            $this->productModel->update(
-                $id,
-                $_POST['name'],
-                $_POST['description'],
-                $_POST['price'],
-                $_POST['category_id'],
-                $image_path
-            );
-            header('Location: admin.php?action=products');
-            exit();
+                if ($this->productModel->update(
+                    $id,
+                    $_POST['name'],
+                    $_POST['description'],
+                    $_POST['price'],
+                    $_POST['category_id'],
+                    $image_path
+                )) {
+                    header('Location: admin.php?action=products');
+                    exit();
+                } else {
+                    $errors[] = ERROR_PRODUCT_UPDATE_FAILED;
+                }
+            }
         }
+        
         $product = $this->productModel->readOne($id);
         $categories = $this->categoryModel->readAll();
         require_once __DIR__ . '/../views/admin/product_form.php';
@@ -81,10 +107,10 @@ class ProductController
         exit();
     }
 
-    private function handleImageUpload()
+    private function handleImageUpload(): ?string
     {
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $target_dir = "assets/images/";
+            $target_dir = IMAGES_DIR;
             // Create dir if it doesn't exist
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
@@ -97,23 +123,15 @@ class ProductController
         return null;
     }
 
-    // Public: List all products
-    public function listProducts()
+    // Liste des produits
+    public function listProducts(): void
     {
-        $category_id = $_GET['category_id'] ?? null;
-        if ($category_id) {
-            $products = $this->productModel->readByCategory($category_id);
-        } else {
-            $products = $this->productModel->readAll();
-        }
-
-        $categories = $this->categoryModel->readAll();
-
+        $products = $this->productModel->readAll();
         require_once __DIR__ . '/../views/product_list.php';
     }
 
-    // Public: Show a single product
-    public function showProduct()
+    // Voir un produit
+    public function showProduct(): void
     {
         if (isset($_GET['id'])) {
             $id = $_GET['id'];
@@ -121,12 +139,10 @@ class ProductController
             if ($product) {
                 require_once __DIR__ . '/../views/product_detail.php';
             } else {
-                // Handle product not found
-                echo "Product not found.";
+                echo ERROR_PRODUCT_NOT_FOUND;
             }
         } else {
-            // Handle no ID provided
-            echo "No product specified.";
+            echo ERROR_NO_PRODUCT_SPECIFIED;
         }
     }
 }

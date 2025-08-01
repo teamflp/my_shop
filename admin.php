@@ -2,11 +2,15 @@
 require_once 'init.php';
 
 use models\Auth;
+use controllers\DashboardController;
 use controllers\ProductController;
 use controllers\CategoryController;
 use controllers\UserController;
 
-// Check if user is admin
+/**
+ * Si l'utilisateur n'a pas la permission d'accéder à la page admin,
+ * il est redirigé vers la page d'accueil.
+**/
 if (!Auth::isAdmin()) {
     header('Location: index.php');
     exit();
@@ -14,9 +18,8 @@ if (!Auth::isAdmin()) {
 
 $action = $_GET['action'] ?? 'dashboard';
 
-// Simple router for admin actions
 switch ($action) {
-    // Product Actions
+    // Actions pour les produits
     case 'products':
         (new ProductController())->adminList();
         break;
@@ -30,7 +33,7 @@ switch ($action) {
         (new ProductController())->delete();
         break;
 
-    // Category Actions
+    // Actions pour les catégories
     case 'categories':
         (new CategoryController())->adminList();
         break;
@@ -48,6 +51,7 @@ switch ($action) {
     case 'manage-users':
         (new UserController())->adminListUsers();
         break;
+    // Actions pour les utilisateurs
     case 'update_user_status':
         (new UserController())->updateUserAdminStatus();
         break;
@@ -58,5 +62,9 @@ switch ($action) {
         $product_count = (new \models\Product())->countAll();
         $category_count = (new \models\Category())->countAll();
         require_once 'views/admin_dashboard.php';
+    // Par défaut, afficher le tableau de bord
+    case 'dashboard':
+    default:
+        (new DashboardController())->show();
         break;
 }
