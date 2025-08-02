@@ -87,6 +87,65 @@
                 </div>
                 <?php endif; ?>
             </div>
+
+            <!-- Section Historique des commandes -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="bi bi-receipt"></i> Historique de mes commandes</h4>
+                </div>
+                <div class="card-body">
+                    <?php if (empty($orders)): ?>
+                        <p class="text-center text-muted">Vous n'avez encore passé aucune commande.</p>
+                    <?php else: ?>
+                        <div class="accordion" id="ordersAccordion">
+                            <?php foreach ($orders as $index => $order): ?>
+                                <div class="card mb-2">
+                                    <div class="card-header" id="heading<?= $order['id'] ?>">
+                                        <h2 class="mb-0">
+                                            <button class="btn btn-link btn-block text-left d-flex justify-content-between align-items-center" type="button" data-toggle="collapse" data-target="#collapse<?= $order['id'] ?>" aria-expanded="<?= $index === 0 ? 'true' : 'false' ?>" aria-controls="collapse<?= $order['id'] ?>">
+                                                <span>
+                                                    <strong>Commande #<?= $order['id'] ?></strong> - <span class="text-muted"><?= date('d/m/Y', strtotime($order['created_at'])) ?></span>
+                                                </span>
+                                                <span>
+                                                    <span class="badge badge-info"><?= htmlspecialchars(ucfirst(str_replace('_', ' ', $order['status']))) ?></span>
+                                                    <strong class="ml-3"><?= number_format($order['total_price'], 2, ',', ' ') ?> €</strong>
+                                                </span>
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse<?= $order['id'] ?>" class="collapse <?= $index === 0 ? 'show' : '' ?>" aria-labelledby="heading<?= $order['id'] ?>" data-parent="#ordersAccordion">
+                                        <div class="card-body">
+                                            <h5>Détails de la commande</h5>
+                                            <p>
+                                                <strong>Adresse de livraison :</strong><br>
+                                                <?= nl2br(htmlspecialchars($order['shipping_address'])) ?>
+                                            </p>
+                                            <hr>
+                                            <h6 class="mb-3">Articles commandés :</h6>
+                                            <?php if (!empty($order['items'])): ?>
+                                                <ul class="list-group list-group-flush">
+                                                    <?php foreach ($order['items'] as $item): ?>
+                                                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                            <div>
+                                                                <?= htmlspecialchars($item['product_name'] ?? 'Produit supprimé') ?>
+                                                                <small class="d-block text-muted">
+                                                                    Quantité : <?= $item['quantity'] ?> &times; <?= number_format($item['price_at_purchase'], 2, ',', ' ') ?> €
+                                                                </small>
+                                                            </div>
+                                                            <strong><?= number_format($item['quantity'] * $item['price_at_purchase'], 2, ',', ' ') ?> €</strong>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
     </div>
 </div>

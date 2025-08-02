@@ -112,6 +112,33 @@ class User
         return $stmt->execute();
     }
 
+    /**
+     * Met à jour les informations de profil d'un utilisateur (username, email, password).
+     * @param int $id
+     * @param string $username
+     * @param string $email
+     * @param string|null $new_password
+     * @return bool
+     */
+    public function updateProfile(int $id, string $username, string $email, ?string $new_password = null): bool
+    {
+        $params = [
+            ':id' => $id,
+            ':username' => $username,
+            ':email' => $email
+        ];
+
+        $password_part = '';
+        if ($new_password !== null) {
+            $password_part = ', password = :password';
+            $params[':password'] = password_hash($new_password, PASSWORD_DEFAULT);
+        }
+
+        $query = "UPDATE " . $this->table . " SET username = :username, email = :email" . $password_part . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        return $stmt->execute($params);
+    }
+
     public function countAll()
     {
         $query = "SELECT COUNT(*) as count FROM " . $this->table;

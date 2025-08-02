@@ -6,6 +6,7 @@ use controllers\DashboardController;
 use controllers\ProductController;
 use controllers\CategoryController;
 use controllers\UserController;
+use controllers\OrderController;
 
 /**
  * Si l'utilisateur n'a pas la permission d'accéder à la page admin,
@@ -45,6 +46,17 @@ switch ($action) {
         break;
     case 'delete_category':
         (new CategoryController())->delete();
+        break;
+
+    // Actions pour les commandes
+    case 'manage-orders':
+        (new OrderController())->adminList();
+        break;
+    case 'view_order':
+        (new OrderController())->adminViewOrder();
+        break;
+    case 'update_order_status':
+        (new OrderController())->adminUpdateStatus();
         break;
 
     // User Actions

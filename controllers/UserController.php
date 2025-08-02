@@ -54,6 +54,7 @@ class UserController
         $success = false;
         $userModel = new User();
         $user = $userModel->readOne($_SESSION['user_id']);
+        $orderModel = new \models\Order();
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $username = $_POST['username'];
@@ -81,19 +82,26 @@ class UserController
             }
             
             if (empty($errors)) {
-                $is_admin = $user['is_admin'];
                 $password_to_update = !empty($new_password) ? $new_password : null;
                 
-                if ($userModel->updateStatusAndAdmin($_SESSION['user_id'], $username, $email, $is_admin, $password_to_update)) {
+                if ($userModel->updateProfile($_SESSION['user_id'], $username, $email, $password_to_update)) {
                     $_SESSION['username'] = $username;
                     $success = true;
+                    // Recharger les données de l'utilisateur pour afficher les infos à jour
                     $user = $userModel->readOne($_SESSION['user_id']);
                 } else {
                     $errors[] = "La mise à jour du profil a échoué.";
                 }
             }
         }
-        
+
+        // Récupère l'historique des commandes de l'utilisateur
+        $orders = $orderModel->getOrdersByUserId($_SESSION['user_id']);
+        // Pour chaque commande, récupérer les articles associés
+        foreach ($orders as $key => $order) {
+            $orders[$key]['items'] = $orderModel->getOrderItems($order['id']);
+        }
+
         require_once __DIR__ . '/../views/profile.php';
     }
 
