@@ -48,6 +48,7 @@ class Product
 
     /**
      * Récupère un produit par son ID.
+     * @param int $id
      * @return array|false
      */
     public function readOne(int $id): false|array
@@ -61,6 +62,15 @@ class Product
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function countAll()
+    {
+        $query = "SELECT COUNT(*) as count FROM " . $this->table;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'];
     }
 
     /**

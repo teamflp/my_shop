@@ -6,8 +6,8 @@ use PDO;
 
 class User
 {
-    private $conn;
-    private $table = 'users';
+    private PDO $conn;
+    private string $table = 'users';
 
     public function __construct()
     {
@@ -37,11 +37,18 @@ class User
         if ($stmt->execute()) {
             return true;
         }
-        printf("Error: %s.\n", $stmt->error);
+        // Error logging should be handled by a dedicated logger or in the controller.
+        // The previous line `printf("Error: %s.\n", $stmt->error);` was incorrect
+        // as PDOStatement does not have an `error` property. One should use $stmt->errorInfo().
         return false;
     }
 
-    public function findByEmail($email)
+    /**
+     * Trouve un utilisateur par son email.
+     * @param string $email
+     * @return array|false
+     */
+    public function findByEmail(string $email): array|false
     {
         $query = "SELECT * FROM " . $this->table . " WHERE email = :email LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -50,12 +57,22 @@ class User
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Vérifie le mot de passe d'un utilisateur.
+     * @param array $user
+     * @param string $password
+     * @return bool
+     */
     public function verifyPassword($user, $password): bool
     {
         return password_verify($password, $user['password']);
     }
 
-    public function ReadOne($id): array
+    /**
+     * @param int $id
+     * @return array|false
+     */
+    public function readOne(int $id): array|false
     {
         $query = "SELECT * FROM " . $this->table . " WHERE id = :id LIMIT 1";
         $stmt = $this->conn->prepare($query);
@@ -79,7 +96,7 @@ class User
      * Met à jour le statut et le rôle (is_admin) d'un utilisateur.
      * CORRIGÉ : Convertit le rôle (ex: "admin") en entier (1 ou 0) pour la BDD.
      */
-    public function updateStatusAndAdmin($id, $role_string, $status): bool
+    public function updateStatusAndAdmin(int $id, string $role_string, string $status): bool
     {
         $is_admin_int = ($role_string === 'admin') ? 1 : 0;
 
@@ -89,18 +106,67 @@ class User
         $status = htmlspecialchars(strip_tags($status));
 
         $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':is_admin', $is_admin_int);
+        $stmt->bindParam(':is_admin', $is_admin_int, PDO::PARAM_INT);
         $stmt->bindParam(':status', $status);
 
         return $stmt->execute();
     }
-    
-    public function delete($id)
+
+    public function countAll()
+    {
+        $query = "SELECT COUNT(*) as count FROM " . $this->table;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['count'];
+    }
+
+    /**
+     * Récupère les derniers utilisateurs inscrits.
+     * @param int $limit Le nombre d'utilisateurs à récupérer.
+     * @return array
+     */
+    public function getLatestUsers(int $limit): array
+    {
+        // CORRIGÉ: La colonne est `created_at`, pas `created`.
+        $query = "SELECT id, username, email, is_admin, status, created_at FROM " . $this->table . " ORDER BY created_at DESC LIMIT :limit";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Supprime un utilisateur.
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
     {
         $query = "DELETE FROM " . $this->table . " WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':id', $id);
-        
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Met à jour le statut administrateur d'un utilisateur.
+     * @param int $user_id L'ID de l'utilisateur à mettre à jour.
+     * @param bool $is_admin Le nouveau statut (true pour admin, false pour non-admin).
+     * @return bool Retourne true en cas de succès, false sinon.
+     */
+    public function setAdminStatus(int $user_id, bool $is_admin): bool
+    {
+        $query = "UPDATE " . $this->table . " SET is_admin = :is_admin WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        // Convertit le booléen en entier (1 ou 0) pour la base de données
+        $is_admin_int = (int) $is_admin;
+
+        $stmt->bindParam(':is_admin', $is_admin_int, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+
         return $stmt->execute();
     }
 }

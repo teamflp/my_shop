@@ -56,15 +56,9 @@ switch ($action) {
         (new UserController())->updateUserAdminStatus();
         break;
 
-    // Default to dashboard
-    default:
-        $user_count = (new \models\User())->countAll();
-        $product_count = (new \models\Product())->countAll();
-        $category_count = (new \models\Category())->countAll();
-        require_once 'views/admin_dashboard.php';
-    // Par défaut, afficher le tableau de bord
     case 'dashboard':
     default:
+        // Par défaut, ou si l'action est 'dashboard', on affiche le tableau de bord.
         (new DashboardController())->show();
         break;
 }

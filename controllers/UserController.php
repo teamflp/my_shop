@@ -2,6 +2,7 @@
 
 namespace controllers;
 
+use models\Auth;
 use models\User;
 
 class UserController
@@ -42,7 +43,7 @@ class UserController
         require_once __DIR__ . '/../views/form_signup.php';
     }
     
-    public function profile()
+    public function profile(): void
     {
         if (!isset($_SESSION['user_id'])) {
             header("Location: signin.php");
@@ -83,7 +84,7 @@ class UserController
                 $is_admin = $user['is_admin'];
                 $password_to_update = !empty($new_password) ? $new_password : null;
                 
-                if ($userModel->update($_SESSION['user_id'], $username, $email, $is_admin, $password_to_update)) {
+                if ($userModel->updateStatusAndAdmin($_SESSION['user_id'], $username, $email, $is_admin, $password_to_update)) {
                     $_SESSION['username'] = $username;
                     $success = true;
                     $user = $userModel->readOne($_SESSION['user_id']);
@@ -96,7 +97,7 @@ class UserController
         require_once __DIR__ . '/../views/profile.php';
     }
 
-    public function login()
+    public function login(): void
     {
         $errors = [];
 
@@ -109,92 +110,60 @@ class UserController
                 return;
             }
 
-            $userModel = new \models\User();
+            $userModel = new User();
             $user = $userModel->findByEmail($email);
 
             if ($user && $userModel->verifyPassword($user, $password)) {
-                \models\Auth::login($user);
-                // Redirect to home page or dashboard
+                Auth::login($user);
+                // Rédirection vers la page d'accueil
                 header("Location: index.php");
                 exit();
             } else {
                 echo "Invalid credentials.";
             }
         } else {
-            // Display the login form
+            // Formulaire de connexion
             require_once __DIR__ . '/../views/form_signin.php';
         }
     }
 
-    // --- Admin Methods ---
+    // --- Méthodes Admin ---
 
-    public function adminListUsers()
+    public function adminListUsers(): void
     {
-        \models\Auth::isAdmin() or die('Forbidden');
-        $userModel = new \models\User();
+        Auth::isAdmin() or die('Forbidden');
+        $userModel = new User();
         $users = $userModel->readAll();
         require_once __DIR__ . '/../views/admin/users.php';
     }
 
-    public function updateUserAdminStatus()
+    public function updateUserAdminStatus(): void
     {
-        \models\Auth::isAdmin() or die('Forbidden');
+        Auth::isAdmin() or die('Forbidden');
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id'])) {
-            $userModel = new \models\User();
+            $userModel = new User();
             $user_id = $_POST['user_id'];
-            // The value from the select will be '1' or '0'
+            // La valeur doit être '1' ou '0'
             $is_admin = $_POST['is_admin'];
             $userModel->setAdminStatus($user_id, $is_admin);
-        }
-        // Redirect back to the user list
-        header("Location: admin.php?action=manage-users");
-                $errors[] = "Veuillez remplir tous les champs.";
-            } else {
-                $userModel = new \models\User();
-                $user = $userModel->findByEmail($email);
+            require_once __DIR__ . '/../views/form_signin.php';
+        } else {
+            $userModel = new User();
+            $user = $userModel->findByEmail($email);
 
-                if ($user && $userModel->verifyPassword($user, $password)) {
-                    if ($user['status'] === 'suspended') {
-                        $errors[] = "Votre compte est suspendu. Veuillez contacter un administrateur.";
-                    } else {
-                        \models\Auth::login($user);
-                        header("Location: index.php");
-                        exit();
-                    }
+            if ($user && $userModel->verifyPassword($user, $password)) {
+                if ($user['status'] === 'suspended') {
+                    $errors[] = "Votre compte est suspendu. Veuillez contacter un administrateur.";
                 } else {
-                    $errors[] = "Identifiants invalides.";
-                }
-            }
-        }
-        
-        require_once __DIR__ . '/../views/form_signin.php';
-    }
-
-    /**
-     * Met à jour le statut et le rôle d'un utilisateur depuis le tableau de bord.
-     */
-    public function updateUserAdminStatus()
-    {
-        \models\Auth::isAdmin() or die('Forbidden');
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
-            $userModel = new \models\User();
-            $userId = $_POST['update_user'];
-            
-            $role = $_POST['role'][$userId] ?? 'user';
-            $status = $_POST['status'][$userId] ?? 'suspended';
-
-            if ($userId) {
-                if ($userId == $_SESSION['user_id']) {
-                    header("Location: admin.php?action=dashboard&error=self_update");
+                    Auth::login($user);
+                    header("Location: index.php");
                     exit();
                 }
-
-                $userModel->updateStatusAndAdmin($userId, $role, $status);
+            } else {
+                $errors[] = "Identifiants invalides.";
             }
+            require_once __DIR__ . '/../views/form_signin.php';
         }
-
-        header("Location: admin.php?action=dashboard");
-        exit();
     }
 }

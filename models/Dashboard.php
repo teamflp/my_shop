@@ -14,60 +14,32 @@ class Dashboard
     }
 
     /**
-     * Obtient le nombre de produits
-     * @return int
-     */
-    public function getProductCount(): int
-    {
-        $query = "SELECT COUNT(*) as count FROM products";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int)$result['count'];
-    }
-
-    /**
-     * Obtient le nombre de catégories
-     * @return int
-     */
-    public function getCategoryCount(): int
-    {
-        $query = "SELECT COUNT(*) as count FROM categories";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int)$result['count'];
-    }
-
-    /**
-     * Obtient le nombre d'utilisateurs
-     * @return int
-     */
-    public function getUserCount(): int
-    {
-        $query = "SELECT COUNT(*) as count FROM users";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return (int)$result['count'];
-    }
-
-    /**
-     * Obtient toutes les statistiques pour le tableau de bord
+     * Obtient toutes les statistiques pour le tableau de bord en une seule requête optimisée.
      * @return array
      */
     public function getStatistics(): array
     {
+        $query = "
+            SELECT
+                (SELECT COUNT(*) FROM products) AS product_count,
+                (SELECT COUNT(*) FROM categories) AS category_count,
+                (SELECT COUNT(*) FROM users) AS user_count
+        ";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Retourne les résultats, en s'assurant que ce sont des entiers.
         return [
-            'product_count' => $this->getProductCount(),
-            'category_count' => $this->getCategoryCount(),
-            'user_count' => $this->getUserCount()
+            'product_count' => (int)($result['product_count'] ?? 0),
+            'category_count' => (int)($result['category_count'] ?? 0),
+            'user_count' => (int)($result['user_count'] ?? 0)
         ];
     }
 
     /**
-     * Récupère les derniers utilisateurs inscrits
-     * @param int $limit Le nombre d'utilisateurs à récupérer
+     * Récupère les derniers utilisateurs inscrits.
+     * @param int $limit Le nombre d'utilisateurs à récupérer.
      * @return array
      */
     public function getLatestUsers(int $limit = 5): array

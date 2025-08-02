@@ -1,7 +1,7 @@
 </main>
 
-<footer class="footer mt-auto py-5 bg-dark text-white">
-    <div class="container">
+<footer class="container-fluid mt-auto bg-dark text-white">
+    <div class="container py-4">
         <div class="row">
             <div class="col-md-4 mb-4 mb-md-0">
                 <h5><i class="bi bi-shop"></i> Ma Boutique</h5>

@@ -111,7 +111,7 @@ class ProductController
     {
         if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
             $target_dir = IMAGES_DIR;
-            // Create dir if it doesn't exist
+            // Créer le répertoire s'il n'existe pas
             if (!is_dir($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }

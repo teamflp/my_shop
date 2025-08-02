@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../includes/header.php'; ?>
+<?php require_once __DIR__ . '/../admin/includes/header.php'; ?>
 
 <div class="container py-4">
     <div class="card shadow-sm">

@@ -1,4 +1,4 @@
-<?php require_once 'admin/includes/header.php'; ?>
+<?php require_once __DIR__ . '/admin/includes/header.php'; ?>
 
 <style>
     /* Votre CSS personnalisé pour les interrupteurs */
@@ -44,7 +44,6 @@
 </style>
 
 <div class="container py-4">
-    <!-- ... (le reste du haut du tableau de bord reste inchangé) ... -->
     <div class="jumbotron bg-primary text-white shadow-sm">
         <h1 class="display-4 text-white"><i class="bi bi-speedometer2"></i> Tableau de Bord</h1>
     </div>
@@ -58,22 +57,42 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-4">
-                            <p class="h2 text-primary"><?= $stats['product_count'] ?? 0 ?></p>
+                            <p class="h2 text-primary"><?= $stats['products'] ?? 0 ?></p>
+                            <p class="text-muted">Produits</p>
                         </div>
                         <div class="col-md-4">
-                            <p class="h2 text-success"><?= $stats['category_count'] ?? 0 ?></p>
+                            <p class="h2 text-success"><?= $stats['categories'] ?? 0 ?></p>
+                            <p class="text-muted">Catégories</p>
                         </div>
                         <div class="col-md-4">
-                            <p class="h2 text-info"><?= $stats['user_count'] ?? 0 ?></p>
+                            <p class="h2 text-info"><?= $stats['users'] ?? 0 ?></p>
+                            <p class="text-muted">Utilisateurs</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-5"> <div class="card shadow-sm"> <div class="card-header bg-light"> <i class="bi bi-person-plus"></i> Derniers Inscrits</div> <div class="card-body"> <?php if (!empty($latestUsers)): ?> <ul class="list-group list-group-flush"> <?php foreach ($latestUsers as $user): ?> <li class="list-group-item d-flex justify-content-between align-items-center"> <?= htmlspecialchars($user['username']) ?> <span class="badge bg-secondary"><?= date("d/m/Y", strtotime($user['created_at'])) ?></span> </li> <?php endforeach; ?> </ul> <?php else: ?> <p class="text-center text-muted">Aucun.</p> <?php endif; ?> </div></div></div>
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <i class="bi bi-person-plus"></i> Derniers Inscrits
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($latestUsers)): ?>
+                        <ul class="list-group list-group-flush">
+                            <?php foreach ($latestUsers as $user): ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <?= htmlspecialchars($user['username']) ?>
+                                <span class="badge bg-secondary"><?= date("d/m/Y", strtotime($user['created_at'])) ?></span>
+                            </li> <?php endforeach; ?>
+                        </ul> <?php else: ?>
+                        <p class="text-center text-muted">Aucun.</p>
+                   <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Section de gestion des utilisateurs CORRIGÉE -->
     <div class="row mt-4">
         <div class="col-12">
             <div class="card shadow-sm">
@@ -122,7 +141,7 @@
                                             </label>
                                         </td>
 
-                                        <!-- Action -->
+
                                         <td class="text-end">
                                             <button type="submit" name="update_user" value="<?= $user['id'] ?>" class="btn btn-primary btn-sm" <?= ($user['id'] == ($_SESSION['user_id'] ?? 0)) ? 'disabled' : '' ?>>
                                                 Mettre à jour
