@@ -13,6 +13,11 @@ switch ($page) {
         $controller->showProduct();
         break;
 
+    case 'order_success':
+        // Affiche la page de confirmation de commande
+        require_once __DIR__ . '/views/order_success.php';
+        break;
+
     case 'home':
     default:
         $controller->listProducts();

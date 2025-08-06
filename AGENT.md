@@ -194,3 +194,5 @@
   - Le vérifier côté serveur avant traitement.
 
 ---
+
+continue avec un code complet non tronqué

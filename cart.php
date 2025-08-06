@@ -17,6 +17,12 @@ switch ($action) {
     case 'remove':
         $controller->remove();
         break;
+    case 'summary':
+        $controller->summary();
+        break;
+    case 'checkout':
+        $controller->checkout();
+        break;
     case 'view':
     default:
         $controller->view();

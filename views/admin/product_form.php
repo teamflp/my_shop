@@ -45,6 +45,11 @@
                                 <?php endforeach; ?>
                             </select>
                         </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="stock"><i class="bi bi-box"></i> Stock:</label>
+                            <input type="number" name="stock" id="stock" class="form-control" value="<?= htmlspecialchars($product['stock'] ?? '0') ?>" placeholder="Quantité en stock" required min="0">
+                        </div>
                     </div>
                     
                     <div class="col-md-6">

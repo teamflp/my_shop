@@ -14,7 +14,7 @@
                             <th>Client</th>
                             <th>Date</th>
                             <th>Statut</th>
-                            <th class="text-right">Total</th>
+                            <th class="text-end">Total</th>
                             <th class="text-center">Actions</th>
                         </tr>
                     </thead>
@@ -33,16 +33,16 @@
                                 <td><?= date('d/m/Y H:i', strtotime($order['created_at'])) ?></td>
                                 <td>
                                     <?php
-                                        $status_class = 'badge-secondary';
-                                        if ($order['status'] === 'expediee') $status_class = 'badge-primary';
-                                        if ($order['status'] === 'livree') $status_class = 'badge-success';
-                                        if ($order['status'] === 'annulee') $status_class = 'badge-danger';
+                                        $status_class = 'bg-secondary';
+                                        if ($order['status'] === 'expediee') $status_class = 'bg-primary';
+                                        if ($order['status'] === 'livree') $status_class = 'bg-success';
+                                        if ($order['status'] === 'annulee') $status_class = 'bg-danger';
                                     ?>
                                     <span class="badge <?= $status_class ?> p-2">
                                         <?= htmlspecialchars(ucfirst(str_replace('_', ' ', $order['status']))) ?>
                                     </span>
                                 </td>
-                                <td class="text-right font-weight-bold"><?= number_format($order['total_price'], 2, ',', ' ') ?> €</td>
+                                <td class="text-end fw-bold"><?= number_format($order['total_price'], 2, ',', ' ') ?> €</td>
                                 <td class="text-center">
                                     <a href="admin.php?action=view_order&id=<?= $order['id'] ?>" class="btn btn-sm btn-info">
                                         <i class="bi bi-eye"></i> Voir

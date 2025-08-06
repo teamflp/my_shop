@@ -65,7 +65,7 @@ switch ($action) {
         break;
     // Actions pour les utilisateurs
     case 'update_user_status':
-        (new UserController())->updateUserAdminStatus();
+        (new UserController())->adminUpdateUser();
         break;
 
     case 'dashboard':

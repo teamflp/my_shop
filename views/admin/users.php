@@ -1,78 +1,68 @@
 <?php require_once __DIR__ . '/../admin/includes/header.php'; ?>
 
 <div class="container py-4">
+    <?php if (isset($_GET['update']) && $_GET['update'] === 'success'): ?>
+        <div class="alert alert-success">
+            L'utilisateur a été mis à jour avec succès.
+        </div>
+    <?php endif; ?>
+
     <div class="card shadow-sm">
         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-people"></i> Gestion des Utilisateurs</h3>
-            <a href="admin.php?action=add_user" class="btn btn-light">
-                <i class="bi bi-person-plus"></i> Ajouter un Utilisateur
-            </a>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="bg-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom d'utilisateur</th>
-                            <th>Email</th>
-                            <th>Rôle</th>
-                            <th>Date de création</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($users)): ?>
+            <form action="admin.php?action=update_user_status" method="post">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="thead-light">
                             <tr>
-                                <td colspan="6" class="text-center py-4">
-                                    <i class="bi bi-emoji-frown" style="font-size: 2rem;"></i>
-                                    <p class="mt-2">Aucun utilisateur trouvé.</p>
-                                </td>
+                                <th>Utilisateur</th>
+                                <th>Email</th>
+                                <th class="text-center">Admin</th>
+                                <th class="text-center">Actif</th>
+                                <th class="text-end">Action</th>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($users as $user): ?>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($allUsers as $user): ?>
                             <tr>
-                                <td><?= htmlspecialchars($user['id']) ?></td>
-                                <td>
-                                    <i class="bi bi-person"></i> <?= htmlspecialchars($user['username']) ?>
-                                    <?php if ($user['id'] == $_SESSION['user_id']): ?>
-                                        <span class="badge badge-secondary">Vous</span>
-                                    <?php endif; ?>
-                                </td>
+                                <td><?= htmlspecialchars($user['username']) ?></td>
                                 <td><?= htmlspecialchars($user['email']) ?></td>
-                                <td>
-                                    <?php if ($user['is_admin']): ?>
-                                        <span class="badge badge-danger">
-                                            <i class="bi bi-shield-lock"></i> Administrateur
-                                        </span>
-                                    <?php else: ?>
-                                        <span class="badge badge-secondary">
-                                            <i class="bi bi-person"></i> Utilisateur
-                                        </span>
-                                    <?php endif; ?>
+
+                                <!-- Rôle (is_admin) -->
+                                <td class="text-center">
+                                    <input type="hidden" name="role[<?= $user['id'] ?>]" value="user"> <!-- Valeur par défaut si la case n'est pas cochée -->
+                                    <label class="switch">
+                                        <input type="checkbox" name="role[<?= $user['id'] ?>]" value="admin"
+                                            <?= ($user['is_admin'] == 1) ? 'checked' : '' ?>
+                                            <?= ($user['id'] == ($_SESSION['user_id'] ?? 0)) ? 'disabled' : '' ?>>
+                                        <span class="slider"></span>
+                                    </label>
                                 </td>
-                                <td>
-                                    <i class="bi bi-calendar"></i> 
-                                    <?= date('d/m/Y H:i', strtotime($user['created_at'])) ?>
+
+                                <!-- Statut -->
+                                <td class="text-center">
+                                    <input type="hidden" name="status[<?= $user['id'] ?>]" value="suspended"> <!-- Valeur par défaut -->
+                                    <label class="switch">
+                                        <input type="checkbox" name="status[<?= $user['id'] ?>]" value="active"
+                                            <?= ($user['status'] === 'active') ? 'checked' : '' ?>
+                                            <?= ($user['id'] == ($_SESSION['user_id'] ?? 0)) ? 'disabled' : '' ?>>
+                                        <span class="slider"></span>
+                                    </label>
                                 </td>
-                                <td>
-                                    <div class="btn-group">
-                                        <a href="admin.php?action=edit_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-info">
-                                            <i class="bi bi-pencil"></i> Modifier
-                                        </a>
-                                        <?php if ($user['id'] != $_SESSION['user_id']): ?>
-                                            <a href="admin.php?action=delete_user&id=<?= $user['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur?')">
-                                                <i class="bi bi-trash"></i> Supprimer
-                                            </a>
-                                        <?php endif; ?>
-                                    </div>
+
+                                <td class="text-end">
+                                    <button type="submit" name="update_user" value="<?= $user['id'] ?>" class="btn btn-primary btn-sm" <?= ($user['id'] == ($_SESSION['user_id'] ?? 0)) ? 'disabled' : '' ?>>
+                                        Mettre à jour
+                                    </button>
                                 </td>
                             </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
         </div>
     </div>
 </div>

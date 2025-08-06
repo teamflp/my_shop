@@ -117,7 +117,7 @@ if (!Auth::isAdmin()) {
             <a href="../admin.php?action=categories" class="list-group-item list-group-item-action"><i class="bi bi-tags"></i> Gérer les Catégories</a>
             <a href="../admin.php?action=manage-orders" class="list-group-item list-group-item-action"><i class="bi bi-receipt"></i> Gérer les Commandes</a>
             <a href="../admin.php?action=manage-users" class="list-group-item list-group-item-action"><i class="bi bi-people"></i> Gérer les Utilisateurs</a>
-            <a href="../index.php" class="list-group-item list-group-item-action"><i class="bi bi-shop"></i> Voir la boutique</a>
+            <a href="../../../index.php" class="list-group-item list-group-item-action"><i class="bi bi-shop"></i> Voir la boutique</a>
             <a href="../logout.php" class="list-group-item list-group-item-action text-danger"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </div>
         <div class="sidebar-footer">
